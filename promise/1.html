@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class SelfPromise {
+            constructor(executor) {
+                this.state = 'pending';
+                this.value = undefined;
+                this.reason = undefined;
+
+                // 发布订阅数组
+                this.onResolvedCallbacks = [];
+                this.onRejectedCallbacks = [];
+
+                const resolve = (value) => {
+                    // 因为状态一旦改变后，就不能在改变，所以要判断状态
+                    if (this.state === 'pending') {
+                        this.value = value;
+                        this.state = 'fulfilled'
+                    }
+
+                    // 订阅
+                    this.onResolvedCallbacks.forEach(fn => fn());
+                }
+                const reject = (reason) => {
+                    // 因为状态一旦改变后，就不能在改变，所以要判断状态
+                    if (this.state === 'pending') {
+                        this.value = reason;
+                        this.state = 'rejected';
+                        this.onRejectedCallbacks.forEach(fn => fn());
+                    }
+                }
+                // 执行
+                executor(resolve, reject)
+            }
+
+            // 有2个函数，一个成功回调，一个失败回调
+            then(onFulfilled, onRejected) {
+                // then里可以继续返回promise，需要做特殊处理，怎么处理呢
+
+                if (this.state === 'fulfilled') {
+                    onFulfilled(this.value);
+                }
+                // 失败
+                if (this.state === 'rejected') {
+                    onRejected(this.reason);
+                }
+
+                /*
+                *    let p = new SelfPromise((resolve, reject) => {
+                *        setTimeout(() => {
+                *           resolve(1);
+                *       }, 1000)
+                *    });
+                * 因为 setTimeout延时执行，此时then 已经执行 state = 'pending',所以需要发布订阅模式
+                */
+
+                // 发布订阅模式===发布
+                if (this.state === 'pending') {
+                    this.onResolvedCallbacks.push(() => {
+                        onFulfilled(this.value)
+                    })
+
+                    this.onRejectedCallbacks.push(() => {
+                        onFulfilled(this.reason)
+                    })
+                }
+            }
+        }
+
+
+
+
+
+        // 实例
+        let p = new SelfPromise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(1);
+            }, 1000)
+        });
+        console.log(p);
+        p.then((res) => {
+            console.log(res);
+        });
+    </script>
+</body>
+
+</html>

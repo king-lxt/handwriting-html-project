@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const resolvePromise = (promise2, x, resolve, reject) => {
+            if (promise2 === x) return reject(new TypeError('chaining cycle detected for promise'));
+            // 判断x是否是promise
+            if (typeof x === 'function' || typeof x === 'object' && x !== null) {
+                try {
+                    const then = x.then;
+                    if (typeof then === 'function') {// 认为是promise
+                        then.call(x, y => {
+                            // resolve(y); 
+                            // 防止回传的还是promise 递归解析
+                            resolvePromise(promise2, y, resolve, reject)
+                        }, r => {
+                            reject(r)
+                        })
+                    }
+                } catch (error) {
+                    reject(error)
+                }
+            } else {
+                resolve(x)
+            }
+
+        }
+
+        class SelfPromise {
+            constructor(executor) {
+                this.state = 'pending';
+                this.value = undefined;
+                this.reason = undefined;
+
+                // 发布订阅数组
+                this.onResolvedCallbacks = [];
+                this.onRejectedCallbacks = [];
+
+                const resolve = (value) => {
+                    // 因为状态一旦改变后，就不能在改变，所以要判断状态
+                    if (this.state === 'pending') {
+                        this.value = value;
+                        this.state = 'fulfilled'
+                        // 订阅
+                        this.onResolvedCallbacks.forEach(fn => fn());
+                    }
+                }
+                const reject = (reason) => {
+                    // 因为状态一旦改变后，就不能在改变，所以要判断状态
+                    if (this.state === 'pending') {
+                        this.value = reason;
+                        this.state = 'rejected';
+                        this.onRejectedCallbacks.forEach(fn => fn());
+                    }
+                }
+                // 执行
+                executor(resolve, reject);
+            }
+
+            // 有2个函数，一个成功回调，一个失败回调
+            then(onFulfilled, onRejected) {
+                // then里可以继续返回promise，需要做特殊处理，怎么处理呢
+                const promise2 = new SelfPromise((resolve, reject) => {
+                    if (this.state === 'fulfilled') {
+                        setTimeout(() => {
+                            const x = onFulfilled(this.value); // x 可能为promise, 
+                            resolvePromise(promise2, x, resolve, reject)
+                        }, 0)
+                    }
+                    if (this.state === 'rejected') {
+                        setTimeout(() => {
+                            const x = onRejected(this.reason);
+                            resolvePromise(promise2, x, resolve, reject)
+                        }, 0)
+                    }
+                    // 发布订阅模式===发布
+                    if (this.state === 'pending') {
+                        this.onResolvedCallbacks.push(() => {
+                            setTimeout(() => {
+                                const x = onFulfilled(this.value);
+                                resolvePromise(promise2, x, resolve, reject)
+                            }, 0);
+                        })
+                        this.onRejectedCallbacks.push(() => {
+                            setTimeout(() => {
+                                const x = onRejected(this.reason);
+                                resolvePromise(promise2, x, resolve, reject)
+                            }, 0)
+                        })
+                    }
+                })
+                return promise2;
+            }
+        }
+
+
+        // 实例
+        let p = new SelfPromise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(100);
+            }, 1000)
+        });
+
+        const p1 = p.then(res => {
+            console.log("🚀 ~ file: 2.html ~ line 116 ~ res", res)
+            return new SelfPromise((resolve, reject) => {
+                resolve(new SelfPromise((resolve, reject) => {
+                    resolve('================')
+                    console.log('22222222222');
+                }))
+            })
+        })
+
+        const p2 = p1.then(res => {
+            console.log("🚀 ~ file: 2.html ~ line 123 ~ res", res)
+        })
+
+
+    </script>
+</body>
+
+</html>

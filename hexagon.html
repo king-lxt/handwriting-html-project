@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hexagon(六边形)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .wrap {
+            position: relative;
+            width: 100px;
+            margin: 20px;
+        }
+
+        .one {
+            width: 50px;
+            height: 86.6px;
+            margin: 0 auto;
+            border-top: 1px solid red;
+            border-bottom: 1px solid red;
+        }
+
+        .two {
+            position: absolute;
+            width: 50px;
+            height: 86.6px;
+            left: 25px;
+            top: 0;
+            transform: translate(-50%, -50%);
+            transform: rotate(60deg);
+            border-top: 1px solid red;
+            border-bottom: 1px solid red;
+        }
+
+        .three {
+            position: absolute;
+            width: 50px;
+            height: 86.6px;
+            left: 25px;
+            top: 0;
+            transform: translate(-50%, -50%);
+            transform: rotate(300deg);
+            border-top: 1px solid red;
+            border-bottom: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class='one'></div>
+        <div class='two'></div>
+        <div class='three'></div>
+    </div>
+</body>
+
+</html>

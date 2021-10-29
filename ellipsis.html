@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ellipsis(省略号)</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h3,
+        p {
+            margin: 0;
+        }
+
+        .con {
+            /* width: 500px; */
+            overflow: hidden;
+            resize: horizontal;
+        }
+
+        .section {
+            display: flex;
+            position: relative;
+            border: 10px solid transparent;
+            outline: 1px solid;
+            overflow: hidden;
+            height: 72px;
+            margin: 10px;
+            line-height: 1.5;
+            text-align: justify;
+            flex-direction: column;
+        }
+
+        .title {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+
+        .excerpt {
+            font-size: 14px;
+            margin-top: auto;
+            flex: 1;
+            overflow: hidden;
+            max-height: 3em;
+        }
+
+        .excerpt::before {
+            content: '...';
+            float: right;
+            height: 100%;
+            shape-outside: inset(calc(100% - 1.5em) 0 0 0);
+            display: flex;
+            align-items: flex-end;
+            margin-left: 2px;
+        }
+
+        .excerpt::after {
+            content: '';
+            position: absolute;
+            width: 999vh;
+            height: 999vh;
+            background: #fff;
+            box-shadow: -2em 2em #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="con">
+        <div class="section">
+            <h3 class="title">LGD 在 TI10 放猛犸，RNG 在 S7 放加里奥最后都输了，哪个更让你愤怒失望？</h3>
+            <p class="excerpt">猛犸是对面的绝中绝，大家都知道，并且之前扳回两局已经证明了，当lgd选择ban掉猛犸，或者自己抢掉猛犸时，对面完全不是对手。</p>
+        </div>
+        <div class="section">
+            <h3 class="title">《饥荒》为什么这么难玩？</h3>
+            <p class="excerpt">玩的是联机版，30个小时了还没过第一个冬天。</p>
+        </div>
+        <div class="section">
+            <h3 class="title">你觉得国漫的巅峰之作是哪个？</h3>
+            <p class="excerpt">一直觉得国漫做的一般，之前看了灵笼这部国漫，做的不错，还有什么YYDS的国漫推荐吗！</p>
+        </div>
+    </div>
+</body>
+
+</html>

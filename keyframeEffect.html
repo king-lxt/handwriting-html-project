@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>keyframeEffect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #box1 {
+            width: 100px;
+            height: 100px;
+            background-color: antiquewhite;
+        }
+
+        #box2 {
+            width: 100px;
+            height: 100px;
+            margin-top: 20px;
+            background-color: aliceblue;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='box1'></div>
+    <div id='box2'></div>
+
+    <script>
+        window.onload = function () {
+            // const box1Dom = document.getElementById('box1');
+            // const box2Dom = document.getElementById('box2');
+
+            // const keyEffect = new KeyframeEffect(null, {
+            //     transform: ['translateX(0)', 'translateX(200px)']
+            // }, { duration: 2000, fill: 'forwards' });
+
+            // const key1 = new KeyframeEffect(keyEffect);
+            // key1.target = box1Dom;
+
+            // const key2 = new KeyframeEffect(keyEffect);
+            // key2.target = box2Dom;
+
+            // new Animation(key1).play();
+            // new Animation(key2).play();
+
+            // ==========================
+            const box1Dom = document.getElementById("box1");
+            const keyEffect1 = new KeyframeEffect(box1Dom, {
+                transform: ['translateX(0)', 'translateX(200px)']
+            }, { duration: 2000, fill: 'forwards' });
+            const ani1 = new Animation(keyEffect1);
+            ani1.play();
+
+            const box2Dom = document.getElementById("box2");
+            const keyEffect2 = new KeyframeEffect(box2Dom, {
+                transform: ['translateX(0)', 'translateX(200px)']
+            }, { duration: 3000, fill: 'forwards' });
+            const ani2 = new Animation(keyEffect2);
+            ani2.play();
+
+            // 监听
+            ani1.onfinish = function () {
+                ani1.play();
+            }
+            ani2.onfinish = function () {
+                ani2.play();
+            }
+
+
+        }
+    </script>
+</body>
+
+</html>
